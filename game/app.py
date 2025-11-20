@@ -1,31 +1,26 @@
 import pygame
 from sys import exit
+from game.settings import SCREEN, CLOCK
+from game.scenes.asset import IMAGE_SCALED_EXIT_GAME, IMAGE_SCALED_EXIT_BOARD
 from game.scenes.intro import IntroScene
 from game.scenes.board import GameScene
+
+APP_QUIT = "QUIT"
+APP_PLAYER_MODE = "PLAYER MODE"
+APP_AI_MODE = "AI MODE"
+APP_BACK_MENU = "BACK TO MENU"
+APP_EXIT_DIALOG = "EXIT DIALOG"
+
 class App:
     def __init__(self):
-        pygame.init()
-
-        self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
-
-        pygame.display.set_caption("2048 Game")
-
-        self.clock = pygame.time.Clock()
-
-        self.Intro = IntroScene(self.screen) 
-        self.Board = GameScene(self.screen)
+        self.Intro = IntroScene() 
+        self.Board = GameScene()
         self.current_scene = self.Intro
 
         self.dialog_items = ["YES", "NO"]
         self.total_dialog_items = len(self.dialog_items)
         self.current_dialog_index = 1
         self.dialog_confirm = False
-
-        exit_path = "game/asset/images/exit_img.png"
-        self.exit_image = pygame.image.load(exit_path).convert()
-        screen_width = self.screen.get_width()  
-        screen_height = self.screen.get_height()
-        self.exit_image = pygame.transform.scale(self.exit_image, (300, 300))
 
         self.color_normal = (255, 255, 255)
         self.color_choose = (0, 255, 255)
@@ -47,19 +42,21 @@ class App:
                 
                 if self.dialog_confirm:
                     signal = self.Handle_Dialog_Event(event) 
-                    if signal == "QUIT":
+                    if (signal == APP_QUIT and self.current_scene == self.Intro):
                         running = False
+                    elif (signal == APP_QUIT and self.current_scene == self.Board):
+                        self.current_scene = self.Intro
                 else:
                     signal = self.current_scene.Handle_Event(event)
                     self.Handle_Signal(signal)
             
-            self.current_scene.Draw(self.screen)
+            self.current_scene.Draw()
 
             if self.dialog_confirm:
                 self.Draw_Exit_Dialog()
 
             pygame.display.update()
-            self.clock.tick(60)
+            CLOCK.tick(60)
 
         pygame.quit()
         exit()
@@ -73,18 +70,20 @@ class App:
             if (event.key == pygame.K_RETURN):
                 selected_choice = self.dialog_items[self.current_dialog_index]
                 if (selected_choice == "YES"):
+                    self.dialog_confirm = False
                     return "QUIT"
                 if (selected_choice == "NO"):
                     self.dialog_confirm = False
 
     def Handle_Signal(self, signal):
-        if signal == "PLAYER MODE":
+        if signal == APP_PLAYER_MODE:
             self.current_scene = self.Board
-        elif signal == "BACK":
-            self.current_scene = self.Intro
-        elif signal == "AI MODE":
+        elif signal == APP_BACK_MENU:
+            self.dialog_confirm = True
+            self.current_dialog_index = 1;
+        elif signal == APP_AI_MODE:
             self.dialog_confirm = False  # FIx khi lam them scene AI mode
-        elif signal == "EXIT DIALOG":
+        elif signal == APP_EXIT_DIALOG:
             self.dialog_confirm = True
             self.current_dialog_index = 1;
 
@@ -100,21 +99,27 @@ class App:
             acpColor = self.color_normal
             acpBorder = self.color_border
 
-        layer_surface = pygame.Surface(self.screen.get_size(), pygame.SRCALPHA)
+        layer_surface = pygame.Surface(SCREEN.get_size(), pygame.SRCALPHA)
         layer_surface.fill((0, 0, 0, 150))
         
-        self.screen.blit(layer_surface, (0, 0))
+        SCREEN.blit(layer_surface, (0, 0))
 
         box_width = 800
         box_height = 600
-        box_x_position = (self.screen.get_width() - box_width) / 2
-        box_y_position = (self.screen.get_height() - box_height) / 2
+        box_x_position = (SCREEN.get_width() - box_width) / 2
+        box_y_position = (SCREEN.get_height() - box_height) / 2
 
         dialog_rect = pygame.Rect(box_x_position, box_y_position, box_width, box_height)
-        pygame.draw.rect(self.screen, (87,65,48), dialog_rect, 5)
-        pygame.draw.rect(self.screen, (193,165,124), dialog_rect, 0, 5)
+        pygame.draw.rect(SCREEN, (87,65,48), dialog_rect, 5)
+        pygame.draw.rect(SCREEN, (193,165,124), dialog_rect, 0, 5)
         
-        question = "CONFIRM TO LEAVE??"
+        if (self.current_scene == self.Intro):
+            question = "CONFIRM TO LEAVE??"
+            image = IMAGE_SCALED_EXIT_GAME
+        elif (self.current_scene == self.Board):
+            question = "BACK TO MENU??"
+            image = IMAGE_SCALED_EXIT_BOARD
+
         (text_qs_surface, border_qs_surface) = self.Create_Text_Border_Surface(
             self.dialog_font, question, self.qs_color, self.qs_border
         )
@@ -125,11 +130,11 @@ class App:
             self.dialog_font, self.dialog_items[1], denyColor, denyBorder
         )
 
-        text_center_x = self.screen.get_width() / 2
-        text_center_y = (self.screen.get_height() / 2) - 200
-        acp_center_x = (self.screen.get_width() / 2) - 150
-        deny_center_x = (self.screen.get_width() / 2) + 150
-        ans_center_y = (self.screen.get_height() / 2) + 200
+        text_center_x = SCREEN.get_width() / 2
+        text_center_y = (SCREEN.get_height() / 2) - 200
+        acp_center_x = (SCREEN.get_width() / 2) - 150
+        deny_center_x = (SCREEN.get_width() / 2) + 150
+        ans_center_y = (SCREEN.get_height() / 2) + 200
 
         text_qs_rect = text_qs_surface.get_rect(center=(text_center_x, text_center_y))
         acp_rect = acp_surface.get_rect(center=(acp_center_x, ans_center_y))
@@ -146,7 +151,7 @@ class App:
         (Lborder_deny_rect, Tborder_deny_rect, Rborder_deny_rect, Bborder_deny_rect) = self.Create_Border_Rect(
             border_deny_surface, deny_center_x, ans_center_y, self.outline2)
 
-        self.screen.blit(self.exit_image, (box_x_position + 250, box_y_position + 150))
+        SCREEN.blit(image, (box_x_position + 250, box_y_position + 150))
 
         self.Blit_Text_Border(
             text_qs_surface, border_qs_surface, Lborder_qs_rect, Tborder_qs_rect,
@@ -164,11 +169,11 @@ class App:
         )
 
     def Blit_Text_Border(self, text_surface, border_surface, left, top, right, bottom, rect):
-        self.screen.blit(border_surface, left)
-        self.screen.blit(border_surface, top)
-        self.screen.blit(border_surface, right)
-        self.screen.blit(border_surface, bottom)
-        self.screen.blit(text_surface, rect)
+        SCREEN.blit(border_surface, left)
+        SCREEN.blit(border_surface, top)
+        SCREEN.blit(border_surface, right)
+        SCREEN.blit(border_surface, bottom)
+        SCREEN.blit(text_surface, rect)
     
     def Create_Border_Rect(self, surface, center_x, center_y, outline):
         Left_Rect = surface.get_rect(center=(center_x - outline, center_y))
