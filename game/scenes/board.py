@@ -68,7 +68,7 @@ class GameScene:
 
         for i in range(0, 4, 1):
             for j in range(0, 4, 1):
-                value = logic.board[i][j]
+                value = logic.g_board[i][j]
 
                 cell_x_position = board_x_position + self.padding + j * cell_size_with_padding
                 cell_y_position = board_y_position + self.padding + i * cell_size_with_padding
@@ -83,9 +83,9 @@ class GameScene:
                     value_rect = value_surface.get_rect(center=(cell_x_center, cell_y_center))
                     SCREEN.blit(value_surface, value_rect)
 
-        self.scores[0] = str(logic.score)
-        if (int(self.scores[1]) < logic.score):
-            self.scores[1] = str(logic.score)
+        self.scores[0] = str(logic.g_score)
+        if (int(self.scores[1]) < logic.g_score):
+            self.scores[1] = str(logic.g_score)
 
         for i in range(0, 2, 1):
             (score_surface, border_surface) = self.Create_Text_Border_Surface(

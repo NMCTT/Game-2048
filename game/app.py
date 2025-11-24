@@ -73,14 +73,14 @@ class App:
                 selected_choice = self.dialog_items[self.current_dialog_index]
                 if (selected_choice == "YES"):
                     self.dialog_confirm = False
-                    if (self.current_scene == self.Board and logic.is_game_over == True):
+                    if (self.current_scene == self.Board and logic.g_is_game_over == True):
                         logic.start_game()
                         return None
                     return "QUIT"
 
                 if (selected_choice == "NO"):
                     self.dialog_confirm = False
-                    if (self.current_scene == self.Board and logic.is_game_over == True):
+                    if (self.current_scene == self.Board and logic.g_is_game_over == True):
                         logic.start_game()
                         return "QUIT"
 
@@ -129,7 +129,7 @@ class App:
         if (self.current_scene == self.Intro):
             question = "CONFIRM TO LEAVE??"
             image = IMAGE_SCALED_EXIT_GAME
-        elif (self.current_scene == self.Board and logic.is_game_over == True):
+        elif (self.current_scene == self.Board and logic.g_is_game_over == True):
             question = "WANNA REPLAY??"
             image = IMAGE_SCALED_GAME_OVER
         elif (self.current_scene == self.Board):
