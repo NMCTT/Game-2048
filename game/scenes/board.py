@@ -1,7 +1,16 @@
 import pygame
 import os
+import game.logic as logic 
 from game.settings import SCREEN
-from game.scenes.asset import IMAGE_SCALED_GAME_BG, IMAGE_SCALED_LOGO, IMAGE_SCALED_SCORE
+from game.scenes.asset import IMAGE_SCALED_GAME_BG, IMAGE_SCALED_LOGO, IMAGE_SCALED_SCORE 
+
+BOARD_BACK_MENU = "BACK TO MENU"
+BOARD_LEFT = "LEFT"
+BOARD_RIGHT = "RIGHT"
+BOARD_UP = "UP"
+BOARD_DOWN = "DOWN"
+BOARD_BEST_SCORE = "200"
+BOARD_GAME_OVER = "GAME OVER"
 
 class GameScene:
     def __init__(self):
@@ -9,7 +18,7 @@ class GameScene:
         self.cell_size = 150
         self.padding = 20   
 
-        self.scores = ["0", "1024"]
+        self.scores = ["0", BOARD_BEST_SCORE]
 
         self.board_color = (244,240,214)
         self.cell_color = (210,138,96)
@@ -18,12 +27,27 @@ class GameScene:
 
         self.normalText = pygame.font.Font(pygame.font.get_default_font(), 80)
         self.number = pygame.font.Font(pygame.font.get_default_font(), 30)
+        self.cellNumber = pygame.font.Font(pygame.font.get_default_font(), 60)
+
+        logic.start_game()
 
     def Handle_Event(self, event):
         if event.type == pygame.KEYDOWN:
             if (event.key == pygame.K_b): 
-                return "BACK TO MENU"
-
+                return BOARD_BACK_MENU
+            elif (event.key == pygame.K_w or event.key == pygame.K_UP):
+                if (logic.Handle_Event(BOARD_UP) == BOARD_GAME_OVER):
+                    return BOARD_BACK_MENU
+            elif (event.key == pygame.K_s or event.key == pygame.K_DOWN):
+                if (logic.Handle_Event(BOARD_DOWN) == BOARD_GAME_OVER):
+                    return BOARD_BACK_MENU
+            elif (event.key == pygame.K_a or event.key == pygame.K_LEFT):
+                if (logic.Handle_Event(BOARD_LEFT) == BOARD_GAME_OVER):
+                    return BOARD_BACK_MENU
+            elif (event.key == pygame.K_d or event.key == pygame.K_RIGHT):
+                if (logic.Handle_Event(BOARD_RIGHT) == BOARD_GAME_OVER):
+                    return BOARD_BACK_MENU
+            
     def Draw(self):
         SCREEN.blit(IMAGE_SCALED_GAME_BG, (0, 0))
 
@@ -41,12 +65,27 @@ class GameScene:
         pygame.draw.rect(SCREEN, self.board_color, board_rect, border_radius = 10)
 
         cell_size_with_padding = self.cell_size + self.padding
+
         for i in range(0, 4, 1):
             for j in range(0, 4, 1):
+                value = logic.board[i][j]
+
                 cell_x_position = board_x_position + self.padding + j * cell_size_with_padding
                 cell_y_position = board_y_position + self.padding + i * cell_size_with_padding
                 cell_rect = pygame.Rect(cell_x_position, cell_y_position, self.cell_size, self.cell_size)
                 pygame.draw.rect(SCREEN, self.cell_color, cell_rect, border_radius = 10)
+
+                if (value != 0):
+                    value_surface = self.cellNumber.render(str(value), True, self.BLACK)
+                    cell_x_center = cell_x_position + self.cell_size / 2
+                    cell_y_center = cell_y_position + self.cell_size / 2
+                    
+                    value_rect = value_surface.get_rect(center=(cell_x_center, cell_y_center))
+                    SCREEN.blit(value_surface, value_rect)
+
+        self.scores[0] = str(logic.score)
+        if (int(self.scores[1]) < logic.score):
+            self.scores[1] = str(logic.score)
 
         for i in range(0, 2, 1):
             (score_surface, border_surface) = self.Create_Text_Border_Surface(

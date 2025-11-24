@@ -1,7 +1,8 @@
 import pygame
 from sys import exit
+import game.logic as logic
 from game.settings import SCREEN, CLOCK
-from game.scenes.asset import IMAGE_SCALED_EXIT_GAME, IMAGE_SCALED_EXIT_BOARD
+from game.scenes.asset import IMAGE_SCALED_EXIT_GAME, IMAGE_SCALED_EXIT_BOARD, IMAGE_SCALED_GAME_OVER
 from game.scenes.intro import IntroScene
 from game.scenes.board import GameScene
 
@@ -10,6 +11,7 @@ APP_PLAYER_MODE = "PLAYER MODE"
 APP_AI_MODE = "AI MODE"
 APP_BACK_MENU = "BACK TO MENU"
 APP_EXIT_DIALOG = "EXIT DIALOG"
+APP_GAME_OVER = "GAME_OVER"
 
 class App:
     def __init__(self):
@@ -71,21 +73,32 @@ class App:
                 selected_choice = self.dialog_items[self.current_dialog_index]
                 if (selected_choice == "YES"):
                     self.dialog_confirm = False
+                    if (self.current_scene == self.Board and logic.is_game_over == True):
+                        logic.start_game()
+                        return None
                     return "QUIT"
+
                 if (selected_choice == "NO"):
                     self.dialog_confirm = False
+                    if (self.current_scene == self.Board and logic.is_game_over == True):
+                        logic.start_game()
+                        return "QUIT"
+
 
     def Handle_Signal(self, signal):
         if signal == APP_PLAYER_MODE:
             self.current_scene = self.Board
         elif signal == APP_BACK_MENU:
             self.dialog_confirm = True
-            self.current_dialog_index = 1;
+            self.current_dialog_index = 1
+        elif signal == APP_GAME_OVER:
+            self.dialog_confirm = True
+            self.current_dialog_index = 0
         elif signal == APP_AI_MODE:
             self.dialog_confirm = False  # FIx khi lam them scene AI mode
         elif signal == APP_EXIT_DIALOG:
             self.dialog_confirm = True
-            self.current_dialog_index = 1;
+            self.current_dialog_index = 1
 
     def Draw_Exit_Dialog(self):
         if (self.current_dialog_index == 0):
@@ -116,6 +129,9 @@ class App:
         if (self.current_scene == self.Intro):
             question = "CONFIRM TO LEAVE??"
             image = IMAGE_SCALED_EXIT_GAME
+        elif (self.current_scene == self.Board and logic.is_game_over == True):
+            question = "WANNA REPLAY??"
+            image = IMAGE_SCALED_GAME_OVER
         elif (self.current_scene == self.Board):
             question = "BACK TO MENU??"
             image = IMAGE_SCALED_EXIT_BOARD
