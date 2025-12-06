@@ -11,6 +11,7 @@ score_path = "game/asset/images/score_layout.png"
 exit_path = "game/asset/images/exit_img.png"
 back_menu_path = "game/asset/images/back_to_menu.png"
 game_over_path = "game/asset/images/game_over.png"
+firefly_bar_path = "game/asset/images/firefly_meow.png"
 
 IMAGE_BACKGROUND = pygame.image.load(bg_intro_path).convert()
 IMAGE_GAME_BG = pygame.image.load(bg_game_path).convert()
@@ -19,6 +20,7 @@ IMAGE_SCORE = pygame.image.load(score_path).convert_alpha()
 IMAGE_EXIT_GAME = pygame.image.load(exit_path).convert()
 IMAGE_EXIT_BOARD = pygame.image.load(back_menu_path).convert()
 IMAGE_GAME_OVER = pygame.image.load(game_over_path).convert()
+IMAGE_FIREFLY_BAR = pygame.image.load(firefly_bar_path).convert_alpha()
 
 IMAGE_SCALED_BACKGROUND = pygame.transform.scale(IMAGE_BACKGROUND, (screen_width, screen_height))
 IMAGE_SCALED_GAME_BG = pygame.transform.scale(IMAGE_GAME_BG, (screen_width, screen_height))
@@ -27,5 +29,19 @@ IMAGE_SCALED_SCORE = pygame.transform.scale(IMAGE_SCORE, (500, 300))
 IMAGE_SCALED_EXIT_GAME = pygame.transform.scale(IMAGE_EXIT_GAME, (300, 300))
 IMAGE_SCALED_EXIT_BOARD = pygame.transform.scale(IMAGE_EXIT_BOARD, (300, 300))
 IMAGE_SCALED_GAME_OVER = pygame.transform.scale(IMAGE_GAME_OVER, (300, 300))
+IMAGE_SCALED_FIREFLY_BAR = pygame.transform.scale(IMAGE_FIREFLY_BAR, (75, 75))
+
+def load_gif(file_name, amount_frames, size):
+    frames = []
+    for i in range(0, amount_frames, 1):
+        frame_path = f"game/asset/images/{file_name}{i + 1}.png"
+        image = pygame.image.load(frame_path).convert_alpha()
+        image_scale = pygame.transform.scale(image, (size, size))
+        frames.append(image_scale)
+    return frames
+        
+E9_ANIMATION = load_gif("e9_fr", 10, 100)
+WALK_ANIMATION = load_gif("walk_fr", 16, 100)
+LOSE_ANIMATION = load_gif("lose_fr", 15, 100)
 
 

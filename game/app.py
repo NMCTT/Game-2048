@@ -24,6 +24,8 @@ class App:
         self.current_dialog_index = 1
         self.dialog_confirm = False
 
+        self.game_over_timestamp = 0
+
         self.color_normal = (255, 255, 255)
         self.color_choose = (0, 255, 255)
         self.color_border = (0, 0, 0)
@@ -33,6 +35,12 @@ class App:
         self.outline2 = 2
 
         self.dialog_font = pygame.font.Font(pygame.font.get_default_font(), 70)
+
+        self.qs_center_x = SCREEN.get_width() / 2
+        self.qs_center_y = (SCREEN.get_height() / 2) - 200
+        self.acp_center_x = (SCREEN.get_width() / 2) - 150
+        self.deny_center_x = (SCREEN.get_width() / 2) + 150
+        self.ans_center_y = (SCREEN.get_height() / 2) + 200
 
 
     def run(self):
@@ -52,6 +60,11 @@ class App:
                     signal = self.current_scene.Handle_Event(event)
                     self.Handle_Signal(signal)
             
+            if logic.g_is_game_over == False:
+                self.game_over_timestamp = 0
+            elif logic.g_is_game_over == True and self.game_over_timestamp == 0:
+                self.game_over_timestamp = pygame.time.get_ticks()
+
             self.current_scene.Draw()
 
             if self.dialog_confirm:
@@ -84,7 +97,6 @@ class App:
                         logic.start_game()
                         return "QUIT"
 
-
     def Handle_Signal(self, signal):
         if signal == APP_PLAYER_MODE:
             self.current_scene = self.Board
@@ -101,6 +113,12 @@ class App:
             self.current_dialog_index = 1
 
     def Draw_Exit_Dialog(self):
+        current_time = pygame.time.get_ticks()
+        passed_time = current_time - self.game_over_timestamp
+
+        if (logic.g_is_game_over == True and passed_time < 1500):
+            return
+
         if (self.current_dialog_index == 0):
             acpColor = self.color_choose
             acpBorder = self.color_border_choose
@@ -129,10 +147,11 @@ class App:
         if (self.current_scene == self.Intro):
             question = "CONFIRM TO LEAVE??"
             image = IMAGE_SCALED_EXIT_GAME
-        elif (self.current_scene == self.Board and logic.g_is_game_over == True):
+        elif (
+            self.current_scene == self.Board and logic.g_is_game_over == True):
             question = "WANNA REPLAY??"
             image = IMAGE_SCALED_GAME_OVER
-        elif (self.current_scene == self.Board):
+        elif (self.current_scene == self.Board and logic.g_is_game_over == False):
             question = "BACK TO MENU??"
             image = IMAGE_SCALED_EXIT_BOARD
 
@@ -146,26 +165,20 @@ class App:
             self.dialog_font, self.dialog_items[1], denyColor, denyBorder
         )
 
-        text_center_x = SCREEN.get_width() / 2
-        text_center_y = (SCREEN.get_height() / 2) - 200
-        acp_center_x = (SCREEN.get_width() / 2) - 150
-        deny_center_x = (SCREEN.get_width() / 2) + 150
-        ans_center_y = (SCREEN.get_height() / 2) + 200
-
-        text_qs_rect = text_qs_surface.get_rect(center=(text_center_x, text_center_y))
-        acp_rect = acp_surface.get_rect(center=(acp_center_x, ans_center_y))
-        deny_rect = deny_surface.get_rect(center=(deny_center_x, ans_center_y))
+        text_qs_rect = text_qs_surface.get_rect(center=(self.qs_center_x, self.qs_center_y))
+        acp_rect = acp_surface.get_rect(center=(self.acp_center_x, self.ans_center_y))
+        deny_rect = deny_surface.get_rect(center=(self.deny_center_x, self.ans_center_y))
 
         (Lborder_qs_rect, Tborder_qs_rect, Rborder_qs_rect, Bborder_qs_rect) = self.Create_Border_Rect(
-            border_qs_surface, text_center_x, text_center_y, self.outline2
+            border_qs_surface, self.qs_center_x, self.qs_center_y, self.outline2
         )
 
         (Lborder_acp_rect, Tborder_acp_rect, Rborder_acp_rect, Bborder_acp_rect) = self.Create_Border_Rect(
-            border_acp_surface, acp_center_x, ans_center_y, self.outline2
+            border_acp_surface, self.acp_center_x, self.ans_center_y, self.outline2
         )
 
         (Lborder_deny_rect, Tborder_deny_rect, Rborder_deny_rect, Bborder_deny_rect) = self.Create_Border_Rect(
-            border_deny_surface, deny_center_x, ans_center_y, self.outline2)
+            border_deny_surface, self.deny_center_x, self.ans_center_y, self.outline2)
 
         SCREEN.blit(image, (box_x_position + 250, box_y_position + 150))
 

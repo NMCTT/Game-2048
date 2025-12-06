@@ -17,6 +17,10 @@ class IntroScene:
         self.outline1 = 5
 
         self.defaut_font = pygame.font.Font(pygame.font.get_default_font(), 100)
+        
+    def initIntroRect(self):
+        # text_rect = text_surface.get_rect(center=(start_x_position, current_y_position))
+        pass
 
     def Handle_Event(self, event):
         if event.type == pygame.KEYDOWN:
