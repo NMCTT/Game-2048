@@ -1,9 +1,9 @@
 import pygame
-import os
 import game.logic as logic 
 from game.settings import SCREEN
-from game.scenes.asset import IMAGE_SCALED_GAME_BG, IMAGE_SCALED_LOGO, IMAGE_SCALED_SCORE, IMAGE_SCALED_FIREFLY_BAR
+from game.scenes.asset import IMAGE_SCALED_GAME_BG, IMAGE_SCALED_LOGO, IMAGE_SCALED_SCORE
 from game.scenes.asset import E9_ANIMATION, WALK_ANIMATION, LOSE_ANIMATION
+from game.scenes.tile import Tile
 
 BOARD_BACK_MENU = "BACK TO MENU"
 BOARD_LEFT = "LEFT"
@@ -59,28 +59,104 @@ class GameScene:
         self.bar_rect = pygame.Rect(
             self.bar_x_position, self.bar_y_position, self.bar_width, self.bar_height
         )
-
+        
+        self.tiles = []
         logic.start_game()
+        # Lần đầu chạy không có hướng
+        self.sync_tiles_from_logic() 
+
+    def sync_tiles_from_logic(self, direction=None): 
+        new_tiles_list = []
+        old_tiles_pool = self.tiles[:] 
+        cell_size_with_padding = self.cell_size + self.padding
+
+        for i in range(4):
+            for j in range(4):
+                value = logic.g_board[i][j]
+                if value != 0:
+                    target_x = self.board_x_position + self.padding + j * cell_size_with_padding
+                    target_y = self.board_y_position + self.padding + i * cell_size_with_padding
+
+                    found_tile = None
+                    shortest_distance = 1000000
+
+                    for tile in old_tiles_pool:
+                        if tile.value == value:
+                            distance = (tile.x - target_x)**2 + (tile.y - target_y)**2
+                            
+                            # === [FIX] LUẬT ===
+                            is_valid_path = False
+                            
+                            if direction == BOARD_LEFT:
+                                # 1. Phải cùng hàng (Row)
+                                # 2. Cấm đi lùi (X cũ phải nằm bên phải đích đến)
+                                if tile.row == i and tile.x >= target_x: 
+                                    is_valid_path = True
+                                    
+                            elif direction == BOARD_RIGHT:
+                                # X cũ phải nằm bên trái đích đến
+                                if tile.row == i and tile.x <= target_x: 
+                                    is_valid_path = True
+                                    
+                            elif direction == BOARD_UP:
+                                # 1. Phải cùng cột (Col)
+                                # 2. Cấm đi lùi (Y cũ phải nằm dưới đích đến)
+                                if tile.col == j and tile.y >= target_y: 
+                                    is_valid_path = True
+                                    
+                            elif direction == BOARD_DOWN:
+                                # Y cũ phải nằm trên đích đến
+                                if tile.col == j and tile.y <= target_y: 
+                                    is_valid_path = True
+                                    
+                            else:
+                                is_valid_path = True # Không có hướng (lúc mới vào game)
+                            # ===========================================
+
+                            if is_valid_path and distance < shortest_distance:
+                                shortest_distance = distance
+                                found_tile = tile
+                    
+                    if found_tile:
+                        found_tile.row = i
+                        found_tile.col = j
+                        found_tile.target_x = target_x
+                        found_tile.target_y = target_y
+                        new_tiles_list.append(found_tile)
+                        old_tiles_pool.remove(found_tile)
+                    else:
+                        new_tile = Tile(value, i, j, target_x, target_y, self.cell_size, self.cellNumber)
+                        new_tile.scale = 0
+                        new_tiles_list.append(new_tile)
+        
+        self.tiles = new_tiles_list
 
     def Handle_Event(self, event):
         if event.type == pygame.KEYDOWN:
             if (event.key == pygame.K_b): 
                 return BOARD_BACK_MENU
-            elif (event.key == pygame.K_w or event.key == pygame.K_UP):
-                if (logic.Handle_Event(BOARD_UP) == BOARD_GAME_OVER):
-                    BOARD_OLD_BEST_SCORE = logic.g_score
-                    return BOARD_BACK_MENU
-            elif (event.key == pygame.K_s or event.key == pygame.K_DOWN):
-                if (logic.Handle_Event(BOARD_DOWN) == BOARD_GAME_OVER):
-                    return BOARD_BACK_MENU
-            elif (event.key == pygame.K_a or event.key == pygame.K_LEFT):
-                if (logic.Handle_Event(BOARD_LEFT) == BOARD_GAME_OVER):
-                    return BOARD_BACK_MENU
-            elif (event.key == pygame.K_d or event.key == pygame.K_RIGHT):
-                if (logic.Handle_Event(BOARD_RIGHT) == BOARD_GAME_OVER):
-                    return BOARD_BACK_MENU
             
+            direction = None
+            if (event.key == pygame.K_w or event.key == pygame.K_UP):
+                direction = BOARD_UP
+            elif (event.key == pygame.K_s or event.key == pygame.K_DOWN):
+                direction = BOARD_DOWN
+            elif (event.key == pygame.K_a or event.key == pygame.K_LEFT):
+                direction = BOARD_LEFT
+            elif (event.key == pygame.K_d or event.key == pygame.K_RIGHT):
+                direction = BOARD_RIGHT
+            
+            if direction != None:
+                # 1. Gọi Logic
+                result = logic.Handle_Event(direction)
+                # 2. Đồng bộ hình ảnh ngay lập tức
+                self.sync_tiles_from_logic(direction)
+                
+                if result == BOARD_GAME_OVER:
+                    return BOARD_BACK_MENU
+
     def Draw(self):
+        # Vẽ nền
         SCREEN.blit(IMAGE_SCALED_GAME_BG, (0, 0))
         SCREEN.blit(IMAGE_SCALED_LOGO, (self.logo_x_position, self.logo_y_position))
         SCREEN.blit(IMAGE_SCALED_SCORE, (self.boxes_x_position, self.boxes_y_position))
@@ -89,23 +165,20 @@ class GameScene:
 
         cell_size_with_padding = self.cell_size + self.padding
 
-        for i in range(0, 4, 1):
-            for j in range(0, 4, 1):
-                value = logic.g_board[i][j]
-
+        # Vẽ các ô trống (nền dưới gạch)
+        for i in range(4):
+            for j in range(4):
                 cell_x_position = self.board_x_position + self.padding + j * cell_size_with_padding
                 cell_y_position = self.board_y_position + self.padding + i * cell_size_with_padding
                 cell_rect = pygame.Rect(cell_x_position, cell_y_position, self.cell_size, self.cell_size)
                 pygame.draw.rect(SCREEN, self.cell_color, cell_rect, border_radius = 10)
+        
+        # VẼ CÁC VIÊN GẠCH (QUAN TRỌNG NHẤT)
+        for tile in self.tiles:
+            tile.update_position() # <--- Di chuyển gạch từng chút một
+            tile.draw(SCREEN)      # <--- Vẽ lên màn hình
 
-                if (value != 0):
-                    value_surface = self.cellNumber.render(str(value), True, self.BLACK)
-                    cell_x_center = cell_x_position + self.cell_size / 2
-                    cell_y_center = cell_y_position + self.cell_size / 2
-                    
-                    value_rect = value_surface.get_rect(center=(cell_x_center, cell_y_center))
-                    SCREEN.blit(value_surface, value_rect)
-
+        # Vẽ điểm số
         self.scores[0] = str(logic.g_score)
         if (self.scores[0] == "0"):
             self.old_best_score = self.scores[1]
@@ -169,8 +242,6 @@ class GameScene:
 
             self.animation_best = self.frames[index][self.current_frame[index]]
             self.animation_walk = self.frames[1][self.current_frame[1]]
-
-
 
     def Blit_Text_Border(self, text_surface, border_surface, left, top, right, bottom, rect):
         SCREEN.blit(border_surface, left)

@@ -79,12 +79,21 @@ def can_move(board):
     for row in board:
         if 0 in row:
             return True
-    for i in range(1, 4):
-        for j in range(1, 4):
-            if board[i][j] == board[i][j - 1]:
-                return True
-            if board[i][j] == board[i - 1][j]:
-                return True
+    
+    for i in range(4):
+        for j in range(4):
+            if j - 1 >= 0:
+                if board[i][j] == board[i][j - 1]:
+                    return True
+            if i - 1 >= 0:
+                if board[i][j] == board[i - 1][j]:
+                    return True
+            if i + 1 <= 3:
+                if board[i][j] == board[i + 1][j]:
+                    return True
+            if j + 1 <= 3:
+                if board[i][j] == board[i][j + 1]:
+                    return True
     return False
 
 def transpose(board):

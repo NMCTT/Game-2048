@@ -1,6 +1,7 @@
 import pygame
 from sys import exit
 import game.logic as logic
+# import game.scenes.board as board
 from game.settings import SCREEN, CLOCK
 from game.scenes.asset import IMAGE_SCALED_EXIT_GAME, IMAGE_SCALED_EXIT_BOARD, IMAGE_SCALED_GAME_OVER
 from game.scenes.intro import IntroScene
@@ -88,6 +89,7 @@ class App:
                     self.dialog_confirm = False
                     if (self.current_scene == self.Board and logic.g_is_game_over == True):
                         logic.start_game()
+                        self.Board.tiles.clear()
                         return None
                     return "QUIT"
 
@@ -95,6 +97,7 @@ class App:
                     self.dialog_confirm = False
                     if (self.current_scene == self.Board and logic.g_is_game_over == True):
                         logic.start_game()
+                        self.Board.tiles.clear()
                         return "QUIT"
 
     def Handle_Signal(self, signal):
