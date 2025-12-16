@@ -88,6 +88,8 @@ class App:
                     self.dialog_confirm = False
                     if (self.current_scene == self.Board and logic.g_is_game_over == True):
                         logic.start_game()
+                        self.Board.tiles = []
+                        self.Board.sync_tiles_from_logic()
                         return None
                     return "QUIT"
 
