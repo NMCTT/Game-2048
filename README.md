@@ -19,7 +19,7 @@ This is a complete 2048 puzzle game implemented in Python using the Pygame libra
 The project is organized into dedicated modules for better maintainability:
 
 ```bash
-2048_Project/
+Game-2048/
 ├── main.py              # Application entry point; initializes the App class and starts the main execution loop.
 ├── app.py               # Application Controller: Manages game flow, scene transitions (Intro, Board), and coordinates AI modes.
 ├── game.py              # UI & Rendering Engine: Responsible for graphical output, drawing tiles, and managing screen states.
@@ -62,7 +62,9 @@ def merge(mat, score):
 Before running the game, ensure you have the following installed:
 
 - **Python 3.10+**: The core programming language.
-- **Pygame library**: Used for rendering the game interface and handling events.
+- **Pygame 2.5.2**: Used for rendering the game interface and handling events.
+- **Torch 2.3.0 and Numpy 1.26.4**: Used for AI.
+- **tqdm**: Library for rendering progress bars.
 
 ### 2. Setup
 
@@ -73,10 +75,13 @@ Follow these steps to set up the project on your local machine:
 git clone https://github.com/NMCTT/Game-2048.git
 
 # Navigate to the project directory
-cd 2048-python
+cd Game-2048
 
 # Install all dependencies from requirements.txt
 pip install -r requirements.txt
+
+# Run the game
+python main.py
 ```
 
 ## Project Timeline and Team Members
