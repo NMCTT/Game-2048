@@ -8,7 +8,7 @@ This is a complete 2048 puzzle game implemented in Python using the Pygame libra
 
 ---
 
-## ✨ Key Features
+##  Key Features
 
 * **Optimized Game Logic:** Efficient matrix manipulation for tile compression and merging.
 * **Graphical UI:** Smooth rendering with custom color palettes for different tile values.
@@ -18,7 +18,7 @@ This is a complete 2048 puzzle game implemented in Python using the Pygame libra
 
 ---
 
-## 📂 Project Structure
+##  Project Structure
 
 The project is organized into dedicated modules for better maintainability:
 
@@ -33,7 +33,7 @@ The project is organized into dedicated modules for better maintainability:
 └── README.md        # Project documentation.
 ```
 
-## 🛠 Core Algorithms
+##  Core Algorithms
 
 The "brain" of the game is implemented in `logic.py`, which handles the 4x4 matrix transformations. The movement logic is processed through a sequential pipeline:
 
@@ -42,7 +42,7 @@ The "brain" of the game is implemented in `logic.py`, which handles the 4x4 matr
 3. **Second Compress**: Re-align tiles after merging to ensure no gaps remain.
 4. **Spawn**: Randomly add a new tile (2 or 4) to an empty spot if the board changed.
 
-### 💻 Logic Implementation Preview:
+###  Logic Implementation Preview:
 
 Here is a simplified look at how the `merge` function works in `logic.py`:
 
