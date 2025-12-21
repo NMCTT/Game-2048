@@ -112,7 +112,25 @@ class App:
                     self.dialog_confirm = False
                     if ((self.current_scene == self.Board or self.current_scene == self.AI_Scene) and logic.g_is_game_over == True):
                         logic.start_game()
-                        if self.current_scene == self.Board:
+                        if self.current_scene == self.AI_Scene:
+                            if hasattr(self.AI_Scene, "agent"):
+                                self.AI_Scene.agent.done = False
+                                
+                                if hasattr(self.AI_Scene.agent, "env"):
+                                    self.AI_Scene.agent.env.reset()
+                                    
+                                    logic.g_board = self.AI_Scene.agent.env.board.copy()
+                                    logic.g_score = self.AI_Scene.agent.env.score
+
+                            # Reset UI (Xóa gạch cũ)
+                            if hasattr(self.AI_Scene, "board_scene"):
+                                self.AI_Scene.board_scene.tiles.clear()
+                                self.AI_Scene.board_scene.sync_tiles_from_logic(None)
+                                for tile in self.AI_Scene.board_scene.tiles:
+                                    tile.scale = 1
+                        # -----------------------------------------
+                        
+                        elif self.current_scene == self.Board:
                             self.Board.tiles = []
                             self.Board.sync_tiles_from_logic()
                         return None
