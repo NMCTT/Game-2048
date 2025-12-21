@@ -61,7 +61,7 @@ def merge(mat, score):
 
 Before running the game, ensure you have the following installed:
 
-- **Python 3.10+**: The core programming language.
+- **Python 3.10**: The core programming language.
 - **Pygame 2.5.2**: Used for rendering the game interface and handling events.
 - **Torch 2.3.0 and Numpy 1.26.4**: Used for AI.
 - **tqdm**: Library for rendering progress bars.
