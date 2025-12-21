@@ -5,7 +5,7 @@ from game.settings import SCREEN, CLOCK
 from game.scenes.asset import IMAGE_SCALED_EXIT_GAME, IMAGE_SCALED_EXIT_BOARD, IMAGE_SCALED_GAME_OVER
 from game.scenes.intro import IntroScene
 from game.scenes.board import GameScene
-
+from game.scenes.play_agent import PlayAgentScene
 APP_QUIT = "QUIT"
 APP_PLAYER_MODE = "PLAYER MODE"
 APP_AI_MODE = "AI MODE"
@@ -17,6 +17,7 @@ class App:
     def __init__(self):
         self.Intro = IntroScene() 
         self.Board = GameScene()
+        self.AI_Scene = PlayAgentScene()
         self.current_scene = self.Intro
 
         self.dialog_items = ["YES", "NO"]
@@ -54,12 +55,35 @@ class App:
                     signal = self.Handle_Dialog_Event(event) 
                     if (signal == APP_QUIT and self.current_scene == self.Intro):
                         running = False
-                    elif (signal == APP_QUIT and self.current_scene == self.Board):
+                    elif (signal == APP_QUIT and (self.current_scene == self.Board or self.current_scene == self.AI_Scene)):
                         self.current_scene = self.Intro
                 else:
                     signal = self.current_scene.Handle_Event(event)
                     self.Handle_Signal(signal)
-            
+            if not self.dialog_confirm and hasattr(self.current_scene, "Update"):
+                # 1. Chụp lại trạng thái bàn cờ trước khi AI đi
+                before_state = str(logic.g_board)
+                # Gọi AI
+                signal = self.current_scene.Update()
+
+                # 2. Kiểm tra xem AI có vừa thực hiện nước đi không?
+                if str(logic.g_board) != before_state:
+                
+                    if hasattr(self.current_scene, "board_scene"):
+                        ai_board = self.current_scene.board_scene
+                        
+                        # Xóa sạch các viên gạch cũ (đang animation dở dang)
+                        ai_board.tiles.clear()
+                        
+                        # Đồng bộ lại vị trí mới (tham số None = không trượt)
+                        ai_board.sync_tiles_from_logic(None)
+                        
+                        # Ép gạch to ra ngay lập tức (không hiệu ứng nảy pop-up)
+                        for tile in ai_board.tiles:
+                            tile.scale = 1
+
+                if signal:
+                    self.Handle_Signal(signal)
             if logic.g_is_game_over == False:
                 self.game_over_timestamp = 0
             elif logic.g_is_game_over == True and self.game_over_timestamp == 0:
@@ -86,16 +110,17 @@ class App:
                 selected_choice = self.dialog_items[self.current_dialog_index]
                 if (selected_choice == "YES"):
                     self.dialog_confirm = False
-                    if (self.current_scene == self.Board and logic.g_is_game_over == True):
+                    if ((self.current_scene == self.Board or self.current_scene == self.AI_Scene) and logic.g_is_game_over == True):
                         logic.start_game()
-                        self.Board.tiles = []
-                        self.Board.sync_tiles_from_logic()
+                        if self.current_scene == self.Board:
+                            self.Board.tiles = []
+                            self.Board.sync_tiles_from_logic()
                         return None
                     return "QUIT"
 
                 if (selected_choice == "NO"):
                     self.dialog_confirm = False
-                    if (self.current_scene == self.Board and logic.g_is_game_over == True):
+                    if ((self.current_scene == self.Board or self.current_scene == self.AI_Scene) and logic.g_is_game_over == True):
                         logic.start_game()
                         return "QUIT"
 
@@ -109,7 +134,9 @@ class App:
             self.dialog_confirm = True
             self.current_dialog_index = 0
         elif signal == APP_AI_MODE:
-            self.dialog_confirm = False  # FIx khi lam them scene AI mode
+            logic.start_game()
+            self.current_scene = self.AI_Scene
+
         elif signal == APP_EXIT_DIALOG:
             self.dialog_confirm = True
             self.current_dialog_index = 1
@@ -149,11 +176,10 @@ class App:
         if (self.current_scene == self.Intro):
             question = "CONFIRM TO LEAVE??"
             image = IMAGE_SCALED_EXIT_GAME
-        elif (
-            self.current_scene == self.Board and logic.g_is_game_over == True):
+        elif ((self.current_scene == self.Board or self.current_scene == self.AI_Scene) and logic.g_is_game_over == True):
             question = "WANNA REPLAY??"
             image = IMAGE_SCALED_GAME_OVER
-        elif (self.current_scene == self.Board and logic.g_is_game_over == False):
+        elif ((self.current_scene == self.Board or self.current_scene == self.AI_Scene) and logic.g_is_game_over == False):
             question = "BACK TO MENU??"
             image = IMAGE_SCALED_EXIT_BOARD
 

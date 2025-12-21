@@ -16,7 +16,8 @@ LOGIC_GAME_OVER = "GAME OVER"
 
 def Handle_Event(direction):
    global g_board, g_score, g_is_game_over
-
+   if hasattr(g_board, 'tolist'):
+       g_board = g_board.tolist() 
    board_backup = copy.deepcopy(g_board)
    gain = 0
 
