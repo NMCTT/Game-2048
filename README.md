@@ -31,3 +31,11 @@ The project is organized into dedicated modules for better maintainability:
 ├── settings.py      # Configuration; defines screen, colors, and constants.
 ├── assets/          # Resources; stores images, fonts, and sounds.
 └── README.md        # Project documentation.
+🛠 Core Algorithms
+The game's intelligence lies in logic.py, which processes movements through three main steps:
+
+Compress: Shifts all non-zero tiles to the target direction.
+
+Merge: Combines adjacent tiles of the same value and updates the score.
+
+Double Compress: Re-aligns tiles after merging to ensure no gaps remain.
