@@ -1,6 +1,6 @@
 # Game 2048
-<img width="1943" height="1215" alt="image" src="https://github.com/user-attachments/assets/38d466a4-49c0-452e-b177-4e5a67de547a" />
 
+<img width="1943" height="1215" alt="image" src="https://github.com/user-attachments/assets/38d466a4-49c0-452e-b177-4e5a67de547a" />
 # 🎮 2048 Game - Project by 404 Not Found
 
 ![Python](https://img.shields.io/badge/python-3.8+-blue.svg?style=for-the-badge&logo=python&logoColor=white) ![Pygame](https://img.shields.io/badge/Pygame-2.0+-green.svg?style=for-the-badge) ![License](https://img.shields.io/badge/license-MIT-green.svg?style=for-the-badge)
@@ -9,17 +9,17 @@ This is a complete 2048 puzzle game implemented in Python using the Pygame libra
 
 ---
 
-##  Key Features
+## Key Features
 
-* **Optimized Game Logic:** Efficient matrix manipulation for tile compression and merging.
-* **Graphical UI:** Smooth rendering with custom color palettes for different tile values.
-* **Game States:** Includes "Game Over" and "Win" detection with interactive dialogs.
-* **Score Tracking:** Real-time score calculation as you merge tiles.
-* **Full Screen Support:** Optimized for immersive gameplay.
+- **Optimized Game Logic:** Efficient matrix manipulation for tile compression and merging.
+- **Graphical UI:** Smooth rendering with custom color palettes for different tile values.
+- **Game States:** Includes "Game Over" and "Win" detection with interactive dialogs.
+- **Score Tracking:** Real-time score calculation as you merge tiles.
+- **Full Screen Support:** Optimized for immersive gameplay.
 
 ---
 
-##  Project Structure
+## Project Structure
 
 The project is organized into dedicated modules for better maintainability:
 
@@ -34,7 +34,7 @@ The project is organized into dedicated modules for better maintainability:
 └── README.md        # Project documentation.
 ```
 
-##  Core Algorithms
+## Core Algorithms
 
 The "brain" of the game is implemented in `logic.py`, which handles the 4x4 matrix transformations. The movement logic is processed through a sequential pipeline:
 
@@ -43,7 +43,7 @@ The "brain" of the game is implemented in `logic.py`, which handles the 4x4 matr
 3. **Second Compress**: Re-align tiles after merging to ensure no gaps remain.
 4. **Spawn**: Randomly add a new tile (2 or 4) to an empty spot if the board changed.
 
-###  Logic Implementation Preview:
+### Logic Implementation Preview:
 
 Here is a simplified look at how the `merge` function works in `logic.py`:
 
@@ -59,14 +59,18 @@ def merge(mat, score):
                 changed = True
     return mat, changed, score
 ```
-##  Installation & Usage
+
+## Installation & Usage
 
 ### 1. Requirements
+
 Before running the game, ensure you have the following installed:
-* **Python 3.8+**: The core programming language.
-* **Pygame library**: Used for rendering the game interface and handling events.
+
+- **Python 3.8+**: The core programming language.
+- **Pygame library**: Used for rendering the game interface and handling events.
 
 ### 2. Setup
+
 Follow these steps to set up the project on your local machine:
 
 ```bash
@@ -78,3 +82,4 @@ cd 2048-python
 
 # Install the required Pygame library
 pip install pygame
+```
