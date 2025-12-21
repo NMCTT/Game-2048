@@ -1,9 +1,6 @@
-# Game 2048
+#  2048 Game - Project by 404 Not Found
 
-<img width="1943" height="1215" alt="image" src="https://github.com/user-attachments/assets/38d466a4-49c0-452e-b177-4e5a67de547a" />
-# 🎮 2048 Game - Project by 404 Not Found
-
-![Python](https://img.shields.io/badge/python-3.8+-blue.svg?style=for-the-badge&logo=python&logoColor=white) ![Pygame](https://img.shields.io/badge/Pygame-2.0+-green.svg?style=for-the-badge) ![License](https://img.shields.io/badge/license-MIT-green.svg?style=for-the-badge)
+![Python](https://img.shields.io/badge/python-3.8+-blue.svg?style=for-the-badge&logo=python&logoColor=white) ![Pygame](https://img.shields.io/badge/Pygame-2.0+-green.svg?style=for-the-badge) 
 
 This is a complete 2048 puzzle game implemented in Python using the Pygame library. Developed by team **404 Not Found**, the project features a modular object-oriented design and optimized matrix algorithms.
 
@@ -16,22 +13,20 @@ This is a complete 2048 puzzle game implemented in Python using the Pygame libra
 - **Game States:** Includes "Game Over" and "Win" detection with interactive dialogs.
 - **Score Tracking:** Real-time score calculation as you merge tiles.
 - **Full Screen Support:** Optimized for immersive gameplay.
-
----
-
+- **AI Mode & Smart Solver:**Beyond manual play, the project features an **AI Mode** where the computer automatically makes decisions to reach the 2048 tile.
 ## Project Structure
 
 The project is organized into dedicated modules for better maintainability:
 
 ```bash
 2048_Project/
-├── main.py          # Entry point; initializes and launches the application.
-├── app.py           # Core application class; manages the main loop and scenes.
-├── game.py          # UI Controller; handles rendering and game state updates.
-├── logic.py         # The "Brain"; handles matrix movement and merging logic.
-├── settings.py      # Configuration; defines screen, colors, and constants.
-├── assets/          # Resources; stores images, fonts, and sounds.
-└── README.md        # Project documentation.
+├── main.py              # Application entry point; initializes the App class and starts the main execution loop.
+├── app.py               # Application Controller: Manages game flow, scene transitions (Intro, Board), and coordinates AI modes.
+├── game.py              # UI & Rendering Engine: Responsible for graphical output, drawing tiles, and managing screen states.
+├── logic.py             # Core Game Logic: Handles the "g_board" matrix, including compression, merging algorithms, and tile spawning.
+├── settings.py          # System Configuration: Defines Pygame constants, Fullscreen settings, CLOCK frequency, and color palettes.
+├── assets/              # Resource Folder: Contains media assets (exit_game.png, game_over.png, fonts, and sound effects).
+└── README.md            # Project documentation and setup guide.
 ```
 
 ## Core Algorithms
@@ -66,7 +61,7 @@ def merge(mat, score):
 
 Before running the game, ensure you have the following installed:
 
-- **Python 3.8+**: The core programming language.
+- **Python 3.10+**: The core programming language.
 - **Pygame library**: Used for rendering the game interface and handling events.
 
 ### 2. Setup
@@ -80,6 +75,8 @@ git clone [https://github.com/404-not-found/2048-python.git](https://github.com/
 # Navigate to the project directory
 cd 2048-python
 
-# Install the required Pygame library
-pip install pygame
+# Install all dependencies from requirements.txt
+pip install -r requirements.txt
 ```
+
+<img width="1943" height="1215" alt="image" src="https://github.com/user-attachments/assets/38d466a4-49c0-452e-b177-4e5a67de547a" />
