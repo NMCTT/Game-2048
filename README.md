@@ -57,3 +57,23 @@ def merge(mat, score):
                 score += mat[i][j]   # Update score
                 changed = True
     return mat, changed, score
+```
+##  Installation & Usage
+
+### 1. Requirements
+Before running the game, ensure you have the following installed:
+* **Python 3.8+**: The core programming language.
+* **Pygame library**: Used for rendering the game interface and handling events.
+
+### 2. Setup
+Follow these steps to set up the project on your local machine:
+
+```bash
+# Clone the repository
+git clone [https://github.com/404-not-found/2048-python.git](https://github.com/404-not-found/2048-python.git)
+
+# Navigate to the project directory
+cd 2048-python
+
+# Install the required Pygame library
+pip install pygame
