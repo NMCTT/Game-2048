@@ -31,11 +31,29 @@ The project is organized into dedicated modules for better maintainability:
 ├── settings.py      # Configuration; defines screen, colors, and constants.
 ├── assets/          # Resources; stores images, fonts, and sounds.
 └── README.md        # Project documentation.
-🛠 Core Algorithms
-The game's intelligence lies in logic.py, which processes movements through three main steps:
+```
 
-Compress: Shifts all non-zero tiles to the target direction.
+## 🛠 Core Algorithms
 
-Merge: Combines adjacent tiles of the same value and updates the score.
+The "brain" of the game is implemented in `logic.py`, which handles the 4x4 matrix transformations. The movement logic is processed through a sequential pipeline:
 
-Double Compress: Re-aligns tiles after merging to ensure no gaps remain.
+1. **Compress**: Shift all non-zero tiles to the target edge, removing empty gaps.
+2. **Merge**: Combine adjacent tiles of equal value and update the game score.
+3. **Second Compress**: Re-align tiles after merging to ensure no gaps remain.
+4. **Spawn**: Randomly add a new tile (2 or 4) to an empty spot if the board changed.
+
+### 💻 Logic Implementation Preview:
+
+Here is a simplified look at how the `merge` function works in `logic.py`:
+
+```python
+def merge(mat, score):
+    for i in range(4):
+        for j in range(3):
+            # If adjacent tiles are the same and not zero
+            if mat[i][j] == mat[i][j + 1] and mat[i][j] != 0:
+                mat[i][j] *= 2      # Double the value
+                mat[i][j + 1] = 0   # Clear the merged tile
+                score += mat[i][j]   # Update score
+                changed = True
+    return mat, changed, score
