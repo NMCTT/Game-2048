@@ -70,7 +70,7 @@ Follow these steps to set up the project on your local machine:
 
 ```bash
 # Clone the repository
-git clone [https://github.com/404-not-found/2048-python.git](https://github.com/404-not-found/2048-python.git)
+git clone [ https://github.com/NMCTT/Game-2048.git]( https://github.com/NMCTT/Game-2048.git)
 
 # Navigate to the project directory
 cd 2048-python
