@@ -1,6 +1,6 @@
 #  2048 Game - Project by 404 Not Found
 
-![Python](https://img.shields.io/badge/python-3.8+-blue.svg?style=for-the-badge&logo=python&logoColor=white) ![Pygame](https://img.shields.io/badge/Pygame-2.0+-green.svg?style=for-the-badge) 
+![Python](https://img.shields.io/badge/python-3.10-blue.svg?style=for-the-badge&logo=python&logoColor=white) ![Pygame](https://img.shields.io/badge/Pygame-2.0+-green.svg?style=for-the-badge) 
 
 This is a complete 2048 puzzle game implemented in Python using the Pygame library. Developed by team **404 Not Found**, the project features a modular object-oriented design and optimized matrix algorithms.
 
@@ -13,7 +13,7 @@ This is a complete 2048 puzzle game implemented in Python using the Pygame libra
 - **Game States:** Includes "Game Over" and "Win" detection with interactive dialogs.
 - **Score Tracking:** Real-time score calculation as you merge tiles.
 - **Full Screen Support:** Optimized for immersive gameplay.
-- **AI Mode & Smart Solver:**Beyond manual play, the project features an **AI Mode** where the computer automatically makes decisions to reach the 2048 tile.
+- **AI Mode & Smart Solver:** Beyond manual play, the project features an **AI Mode** where the computer automatically makes decisions to reach the 2048 tile.
 ## Project Structure
 
 The project is organized into dedicated modules for better maintainability:
@@ -70,7 +70,7 @@ Follow these steps to set up the project on your local machine:
 
 ```bash
 # Clone the repository
-git clone [ https://github.com/NMCTT/Game-2048.git]( https://github.com/NMCTT/Game-2048.git)
+git clone https://github.com/NMCTT/Game-2048.git
 
 # Navigate to the project directory
 cd 2048-python
@@ -78,5 +78,7 @@ cd 2048-python
 # Install all dependencies from requirements.txt
 pip install -r requirements.txt
 ```
+
+## Project Timeline and Team Members
 
 <img width="1943" height="1215" alt="image" src="https://github.com/user-attachments/assets/38d466a4-49c0-452e-b177-4e5a67de547a" />
