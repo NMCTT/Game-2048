@@ -144,6 +144,9 @@ class App:
 
     def Handle_Signal(self, signal):
         if signal == APP_PLAYER_MODE:
+            logic.start_game()
+            self.Board.tiles = []
+            self.Board.sync_tiles_from_logic()
             self.current_scene = self.Board
         elif signal == APP_BACK_MENU:
             self.dialog_confirm = True
@@ -153,8 +156,11 @@ class App:
             self.current_dialog_index = 0
         elif signal == APP_AI_MODE:
             logic.start_game()
+            if hasattr(self.AI_Scene, "agent"):
+                self.AI_Scene.agent.done = False
+                if hasattr(self.AI_Scene.agent, "env"):
+                    self.AI_Scene.agent.env.reset()
             self.current_scene = self.AI_Scene
-
         elif signal == APP_EXIT_DIALOG:
             self.dialog_confirm = True
             self.current_dialog_index = 1
