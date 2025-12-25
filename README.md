@@ -6,6 +6,32 @@ This is a complete 2048 puzzle game implemented in Python using the Pygame libra
 
 ---
 
+## UI Overview
+
+**Menu**
+
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/a005ee2d-6458-45bf-993c-267e984c77fe" />
+
+---
+
+**Dialogs**
+
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/46ba6fb1-31ff-446c-a000-53419321d097" />
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/3e188cf8-5504-47dd-92bb-1ff8415589d2" />
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/070195e1-f9cd-46d5-b4cb-8798cbc848e6" />
+
+---
+
+**Normal Match**
+
+![1](https://github.com/user-attachments/assets/a38f7917-4488-4efe-9d3d-5193c05a86ed)
+
+---
+
+**AI Mode**
+
+![2](https://github.com/user-attachments/assets/e6136145-891a-4d12-bc18-7300a54675cd)
+
 ## Key Features
 
 - **Optimized Game Logic:** Efficient matrix manipulation for tile compression and merging.
@@ -20,13 +46,27 @@ The project is organized into dedicated modules for better maintainability:
 
 ```bash
 Game-2048/
-├── main.py              # Application entry point; initializes the App class and starts the main execution loop.
-├── app.py               # Application Controller: Manages game flow, scene transitions (Intro, Board), and coordinates AI modes.
-├── game.py              # UI & Rendering Engine: Responsible for graphical output, drawing tiles, and managing screen states.
-├── logic.py             # Core Game Logic: Handles the "g_board" matrix, including compression, merging algorithms, and tile spawning.
-├── settings.py          # System Configuration: Defines Pygame constants, Fullscreen settings, CLOCK frequency, and color palettes.
-├── assets/              # Resource Folder: Contains media assets (exit_game.png, game_over.png, fonts, and sound effects).
-└── README.md            # Project documentation and setup guide.
+├── game/
+│   ├── asset/images         # Contains all of the sprites and textures in the game.
+│   ├── core/
+│   │   └── env_2048.py      # OpenAI Gym wrapper
+│   ├── rl/                  
+│   │   ├── agent_dqn.py     # Class DQNAgent, the network learns how to act in a game or environment by trial and error.
+│   │   ├── dqn_model.py     # Defines the deep Q-Network for 2048.
+│   │   ├── memory.py        # Replay Buffer.
+│   │   └── train_dqn.py     # For training the AI.
+│   ├── scenes/
+│   │   ├── asset.py         # Asset loader.
+│   │   ├── board.py         # Main gameplay scene.
+│   │   ├── intro.py         # Intro Scene (aka Menu).
+│   │   ├── play_agent.py    # Main gameplay scene designed specifically for AI mode.
+│   │   └── tile.py          # Contains the class Tile for animating moving tiles.
+│   ├── settings.py          # System Configuration.
+│   └── app.py               # Application Controller: Manages game flow, scene transitions (Intro, Board), and coordinates AI modes.
+├── dqn_2048.pth             # Storing AI model's weights and parameters for AI mode.
+├── main.py                  # Application entry point.
+├── requirements.txt         # Requirements to run the game.
+└── README.md                # Project documentation and setup guide.
 ```
 
 ## Core Algorithms
@@ -86,4 +126,19 @@ python main.py
 
 ## Project Timeline and Team Members
 
+**Lecturer:** Lê Đức Khoan
+
+| Members | Student ID |
+| :--- | :--- |
+| Nguyễn Vĩnh Phú | 25120220 |
+| Trịnh Đặng Nhật Minh | 25120210 |
+| Sok Minh | 25120209 |
+| Đoàn Tấn Phát | 25120217 |
+| Nguyễn Đức Thịnh | 25120232 |
+| Đặng Phúc Lộc | 25120203 |
+
+---
+
 <img width="1943" height="1215" alt="image" src="https://github.com/user-attachments/assets/38d466a4-49c0-452e-b177-4e5a67de547a" />
+
+---
